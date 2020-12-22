@@ -2,7 +2,9 @@ import React, { useState, useContext } from 'react';
 import { TextField, Typography, Grid, Button, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 
+import formatDate from '../../../utils/formatDate';
 import { ExpenseTrackerContext } from '../../../context/context';
+import { incomeCategories, expenseCategories } from '../../../constants/categories';
 
 import useStyles from './styles';
 
@@ -10,7 +12,7 @@ const initialState = {
     amount: '',
     category: '',
     type: 'Income',
-    date: new Date()
+    date: formatDate(new Date())
 }
 
 const Form = () => {
@@ -29,6 +31,8 @@ const Form = () => {
         addTransaction(transaction);
         setFormData(initialState);
     }
+
+    const selectedCategories = formData.type === "Income" ? incomeCategories : expenseCategories;
 
     return (
         <Grid container spacing={2}>
@@ -50,8 +54,11 @@ const Form = () => {
                 <FormControl fullWidth>
                     <InputLabel>Category</InputLabel>
                     <Select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
-                        <MenuItem value="Business">Business</MenuItem>
-                        <MenuItem value="Salary">Salary</MenuItem>
+                        {selectedCategories.map((c) => (
+                            <MenuItem key={c.type} value={c.type}>
+                                {c.type}
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
             </Grid>
@@ -67,7 +74,7 @@ const Form = () => {
             <Grid item xs={6}>
                 <TextField
                     value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, date: formatDate(e.target.value) })}
                     type="date"
                     label="Date"
                     fullWidth
