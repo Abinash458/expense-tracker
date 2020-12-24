@@ -6,6 +6,7 @@ import { useSpeechContext } from '@speechly/react-client';
 import formatDate from '../../../utils/formatDate';
 import { ExpenseTrackerContext } from '../../../context/context';
 import { incomeCategories, expenseCategories } from '../../../constants/categories';
+import CustomizedSnackbar from '../../Snackbar/CustomizedSnackbar';
 
 import useStyles from './styles';
 
@@ -19,7 +20,10 @@ const initialState = {
 const Form = () => {
 
     const classes = useStyles();
+
     const [formData, setFormData] = useState(initialState);
+    const [open, setOpen] = useState(false);
+
     const { addTransaction } = useContext(ExpenseTrackerContext);
     const { segment } = useSpeechContext();
 
@@ -31,6 +35,7 @@ const Form = () => {
             id: uuidv4()
         }
 
+        setOpen(true);
         addTransaction(transaction);
         setFormData(initialState);
     }
@@ -84,6 +89,7 @@ const Form = () => {
 
     return (
         <Grid container spacing={2}>
+            <CustomizedSnackbar open={open} setOpen={setOpen} />
             <Grid item xs={12}>
                 <Typography align="center" variant="subtitle2" gutterBottom>
                     {segment && segment.words.map((word) => word.value).join(" ")}
